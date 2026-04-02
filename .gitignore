@@ -1,0 +1,5 @@
+node_modules/
+campaign.js
+.env
+playwright-report/
+test-results/
