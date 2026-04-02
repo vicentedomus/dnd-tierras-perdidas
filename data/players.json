@@ -1,0 +1,123 @@
+[
+  {
+    "id": "311bece6-f7da-81d4-bd10-c78000b1bb15",
+    "nombre": "Pithor",
+    "clase": "Barbarian",
+    "subclase": "World Tree",
+    "raza": "Gnome",
+    "tipo": "Player",
+    "rol": null,
+    "es_pj": true,
+    "jugador": "Caco",
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "Gnomo con piel azul (parecido a papá pitufo) que cree que es un Goliath",
+    "items_magicos": [
+      { "id": "313bece6-f7da-80a3-84ed-f6c426e1dfb7", "nombre": "Femur de Barlgura" }
+    ]
+  },
+  {
+    "id": "311bece6-f7da-8104-959c-e2faa07eff3f",
+    "nombre": "Lupin",
+    "clase": "Ranger",
+    "subclase": "Beast master",
+    "raza": "Humano",
+    "tipo": "Player",
+    "rol": null,
+    "es_pj": true,
+    "jugador": "Hiram",
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "",
+    "items_magicos": [
+      { "id": "313bece6-f7da-80c2-baa4-c3601708705f", "nombre": "Alchemy Jug" },
+      { "id": "313bece6-f7da-80fb-9f0c-e6f75e48dc28", "nombre": "Immovable Rod" }
+    ]
+  },
+  {
+    "id": "311bece6-f7da-8106-ae55-c194a597f133",
+    "nombre": "Maverick",
+    "clase": "Sorcerer",
+    "subclase": "Draconic",
+    "raza": "Elf",
+    "tipo": "Player",
+    "rol": null,
+    "es_pj": true,
+    "jugador": "Enoch",
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "",
+    "items_magicos": [
+      { "id": "313bece6-f7da-8065-bbd6-f7698076846f", "nombre": "50gp Diamond" },
+      { "id": "313bece6-f7da-80d7-9e44-f08c340ac664", "nombre": "100gp Pearl" },
+      { "id": "313bece6-f7da-80ae-b2fd-fe5dc73c825b", "nombre": "Covered Wagon" }
+    ]
+  },
+  {
+    "id": "311bece6-f7da-8174-9cef-c3f0fb7ecda9",
+    "nombre": "Doran",
+    "clase": "Bard",
+    "subclase": "College of Lore",
+    "raza": "Orc",
+    "tipo": "Player",
+    "rol": null,
+    "es_pj": true,
+    "jugador": "Leo",
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "",
+    "items_magicos": []
+  },
+  {
+    "id": "313bece6-f7da-801b-b15d-e7e962b457b9",
+    "nombre": "Zif",
+    "clase": null,
+    "subclase": null,
+    "raza": null,
+    "tipo": "NPC",
+    "rol": "Aliado",
+    "es_pj": false,
+    "jugador": "Hiram",
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "Es el owlbear companion de Lupin, por su subclase de Beast Master de Ranger",
+    "items_magicos": []
+  },
+  {
+    "id": "311bece6-f7da-8162-87c8-d17161cee57c",
+    "nombre": "Nelly la Yegua",
+    "clase": null,
+    "subclase": null,
+    "raza": null,
+    "tipo": "NPC",
+    "rol": "Aliado",
+    "es_pj": false,
+    "jugador": null,
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "El caballo de Pithor",
+    "items_magicos": []
+  },
+  {
+    "id": "313bece6-f7da-80b3-8258-dcdc1815f09e",
+    "nombre": "Altino el Caballo Albino",
+    "clase": null,
+    "subclase": null,
+    "raza": null,
+    "tipo": "NPC",
+    "rol": "Aliado",
+    "es_pj": false,
+    "jugador": null,
+    "nivel": null,
+    "ac": null,
+    "hp_maximo": null,
+    "descripcion": "El segundo caballo de Pithor",
+    "items_magicos": []
+  }
+]

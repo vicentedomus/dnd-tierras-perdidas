@@ -1,0 +1,58 @@
+[
+  {
+    "id": "313bece6-f7da-80a3-84ed-f6c426e1dfb7",
+    "nombre": "Femur de Barlgura",
+    "tipo": "Weapon",
+    "rareza": "Uncommon",
+    "requiere_sintonizacion": false,
+    "personaje": { "id": "311bece6-f7da-81d4-bd10-c78000b1bb15", "nombre": "Pithor" }
+  },
+  {
+    "id": "318bece6-f7da-8041-87bc-ef850907f808",
+    "nombre": "Bag of Holding",
+    "tipo": "Wondrous Item",
+    "rareza": "Uncommon",
+    "requiere_sintonizacion": false,
+    "personaje": null
+  },
+  {
+    "id": "313bece6-f7da-80fb-9f0c-e6f75e48dc28",
+    "nombre": "Immovable Rod",
+    "tipo": null,
+    "rareza": null,
+    "requiere_sintonizacion": false,
+    "personaje": { "id": "311bece6-f7da-8104-959c-e2faa07eff3f", "nombre": "Lupin" }
+  },
+  {
+    "id": "313bece6-f7da-8065-bbd6-f7698076846f",
+    "nombre": "50gp Diamond",
+    "tipo": null,
+    "rareza": null,
+    "requiere_sintonizacion": false,
+    "personaje": { "id": "311bece6-f7da-8106-ae55-c194a597f133", "nombre": "Maverick" }
+  },
+  {
+    "id": "313bece6-f7da-80d7-9e44-f08c340ac664",
+    "nombre": "100gp Pearl",
+    "tipo": null,
+    "rareza": null,
+    "requiere_sintonizacion": false,
+    "personaje": { "id": "311bece6-f7da-8106-ae55-c194a597f133", "nombre": "Maverick" }
+  },
+  {
+    "id": "313bece6-f7da-80c2-baa4-c3601708705f",
+    "nombre": "Alchemy Jug",
+    "tipo": null,
+    "rareza": null,
+    "requiere_sintonizacion": false,
+    "personaje": { "id": "311bece6-f7da-8104-959c-e2faa07eff3f", "nombre": "Lupin" }
+  },
+  {
+    "id": "313bece6-f7da-80ae-b2fd-fe5dc73c825b",
+    "nombre": "Covered Wagon",
+    "tipo": null,
+    "rareza": null,
+    "requiere_sintonizacion": false,
+    "personaje": { "id": "311bece6-f7da-8106-ae55-c194a597f133", "nombre": "Maverick" }
+  }
+]

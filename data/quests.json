@@ -1,0 +1,13 @@
+[
+  {
+    "id": "314bece6-f7da-8129-9868-f6688ac43c3c",
+    "nombre": "El Componente Robado",
+    "estado": "Activa",
+    "visible_jugadores": false,
+    "resumen": "Recuperar discretamente el Cristal de Contención Arcana robado de Reliquias de Zantheon antes de que llegue a manos del Escriba en Rockwood.",
+    "recompensa_gp": "150",
+    "npcs_importantes": "",
+    "ciudades": [],
+    "establecimientos": []
+  }
+]

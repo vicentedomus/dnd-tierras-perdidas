@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campaña D&amp;D</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#131313">
+  <meta name="description" content="Compendio interactivo de la campaña de Dungeons & Dragons">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="stone-wall"></div>
+  <div class="frame-outer">
+    <div class="nail ntl"></div><div class="nail ntr"></div>
+    <div class="nail nbl"></div><div class="nail nbr"></div>
+    <div class="parchment">
+      <div class="login-logo" id="login-logo"></div>
+      <div class="login-subtitle">Campaña de Dungeons &amp; Dragons</div>
+      <div class="login-divider"></div>
+      <form id="login-form" autocomplete="off">
+        <input type="text" id="username-input" placeholder="Usuario" autofocus>
+        <input type="password" id="password-input" placeholder="Contraseña">
+        <button type="submit" class="btn-login">&#9660; Entrar al Reino &#9660;</button>
+      </form>
+      <div class="login-error" id="login-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo" id="sidebar-logo"></div>
+      <div class="sidebar-subtitle" id="sidebar-subtitle"></div>
+    </div>
+    <nav id="tab-bar">
+      <button class="tab-btn active" data-tab="campana">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Campaña
+      </button>
+      <button class="tab-btn" data-tab="notas">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Notas
+      </button>
+
+      <button class="tab-btn" data-tab="npcs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        NPCs
+      </button>
+      <button class="tab-btn" data-tab="establecimientos">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Establecimientos
+      </button>
+      <button class="tab-btn" data-tab="ciudades">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+        Ciudades
+      </button>
+      <button class="tab-btn" data-tab="lugares">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+        Lugares
+      </button>
+      <button class="tab-btn" data-tab="items">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Items
+      </button>
+      <button class="tab-btn" data-tab="personajes">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Personajes
+      </button>
+      <button class="tab-btn" data-tab="quests">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Quests
+      </button>
+      <button class="tab-btn map-only" data-tab="mapa">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+        Mapa
+      </button>
+      <button class="tab-btn dm-only" data-tab="utilidades">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Utilidades
+      </button>
+    </nav>
+  </aside>
+
+  <!-- MOBILE OVERLAY -->
+  <div id="sidebar-overlay"></div>
+
+  <!-- MAIN AREA -->
+  <div id="main-area">
+    <!-- HEADER -->
+    <header id="header">
+      <button id="menu-toggle" aria-label="Abrir menú">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="header-title" id="header-section-title"></div>
+      <div class="header-actions">
+        <div id="global-search" class="global-search">
+          <button class="global-search-toggle" onclick="toggleGlobalSearch()" title="Buscar (Ctrl+K)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <input type="text" id="global-search-input" class="global-search-input" placeholder="Buscar en todo..." autocomplete="off">
+          <div id="global-search-results" class="global-search-results"></div>
+        </div>
+        <button class="btn dm-only btn-sm" onclick="recargarDatos()" title="Recargar datos">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <span>Recargar</span>
+        </button>
+        <button class="btn btn-danger" onclick="logout()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Salir</span>
+        </button>
+      </div>
+    </header>
+
+  <!-- CONTENT -->
+  <main id="content">
+
+    <section id="section-campana" class="section active">
+      <div class="campana-toolbar">
+        <input type="text" id="campana-search" class="search-input" placeholder="Buscar en toda la campaña..." oninput="renderCampana()">
+        <button class="btn btn-sm campana-clear-btn" onclick="campanaSelected=null;renderCampana()" title="Limpiar selección" style="display:none" id="campana-clear-sel">Limpiar selección</button>
+        <button class="btn btn-sm campana-config-btn" onclick="campanaToggleConfig()" title="Configurar columnas" id="campana-config-toggle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Columnas</span>
+        </button>
+      </div>
+      <div class="campana-config-panel" id="campana-config-panel"></div>
+      <div class="campana-columns" id="campana-columns"></div>
+    </section>
+
+    <section id="section-notas" class="section">
+      <div class="section-header">
+        <h2 class="section-title">📓 Notas de Sesión</h2>
+        <div class="section-controls">
+          <button class="btn" onclick="openModal(isDM() ? 'notas_dm' : 'notas_jugadores', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div id="filter-bar-notas"></div>
+      <div class="cards-grid cards-grid-wide" id="grid-notas"></div>
+    </section>
+
+    <section id="section-npcs" class="section">
+      <div class="section-header">
+        <h2 class="section-title">👤 NPCs</h2>
+        <div class="section-controls">
+          <input type="text" class="search-input" id="search-npcs" placeholder="Buscar NPC..." oninput="renderNPCs()">
+          <button class="btn" onclick="openModal('npcs', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div id="filter-bar-npcs"></div>
+      <div class="cards-grid" id="grid-npcs"></div>
+    </section>
+
+    <section id="section-establecimientos" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🏪 Establecimientos</h2>
+        <div class="section-controls">
+          <input type="text" class="search-input" id="search-establecimientos" placeholder="Buscar..." oninput="renderEstablecimientos()">
+          <button class="btn" onclick="openModal('establecimientos', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div id="filter-bar-establecimientos"></div>
+      <div class="cards-grid" id="grid-establecimientos"></div>
+    </section>
+
+    <section id="section-ciudades" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🏙 Ciudades</h2>
+        <div class="section-controls">
+          <input type="text" class="search-input" id="search-ciudades" placeholder="Buscar ciudad..." oninput="renderCiudades()">
+          <button class="btn" onclick="openModal('ciudades', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div class="cards-grid" id="grid-ciudades"></div>
+    </section>
+
+    <section id="section-lugares" class="section">
+      <div class="section-header">
+        <h2 class="section-title">🗺 Lugares</h2>
+        <div class="section-controls">
+          <button class="btn dm-only" onclick="openModal('lugares', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div class="cards-grid" id="grid-lugares"></div>
+    </section>
+
+    <section id="section-items" class="section">
+      <div class="section-header">
+        <h2 class="section-title">⚔ Items Mágicos</h2>
+        <div class="section-controls">
+          <input type="text" class="search-input" id="search-items" placeholder="Buscar item..." oninput="renderItems()">
+          <button class="btn dm-only" onclick="openModal('items', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div id="filter-bar-items"></div>
+      <div class="cards-grid" id="grid-items"></div>
+    </section>
+
+    <section id="section-personajes" class="section">
+      <div class="section-header">
+        <h2 class="section-title">⚔ Personajes</h2>
+        <div class="section-controls">
+          <button class="btn btn-sm ddb-sync-btn dm-only" onclick="ddbSyncAll(this)" title="Sincronizar todos los PJs desde D&D Beyond">&#x21bb; Sync D&D Beyond</button>
+          <button class="btn dm-only" onclick="openModal('personajes', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div class="cards-grid" id="grid-personajes"></div>
+    </section>
+
+    <section id="section-quests" class="section">
+      <div class="section-header">
+        <h2 class="section-title">★ Quests</h2>
+        <div class="section-controls">
+          <button class="btn dm-only" onclick="openModal('quests', null)">&#43; Añadir</button>
+        </div>
+      </div>
+      <div class="cards-grid" id="grid-quests"></div>
+    </section>
+
+    <section id="section-mapa" class="section section-mapa">
+      <div class="map-wrapper">
+        <div class="map-layer-panel" id="map-layer-panel"></div>
+        <div id="exploration-log-panel" class="exploration-log-panel" style="display:none">
+          <div class="exploration-log-header">
+            <span>Diario de Exploración</span>
+            <button class="hex-detail-close" onclick="toggleExplorationLog()">✕</button>
+          </div>
+          <div id="exploration-log-list" class="exploration-log-list"></div>
+        </div>
+        <div class="map-viewport" id="map-viewport"></div>
+        <div class="map-zoom-controls">
+          <button class="map-zoom-btn" onclick="mapZoom(0.77)" title="Acercar">+</button>
+          <button class="map-zoom-btn" onclick="mapZoomReset()" title="Restablecer">&#8635;</button>
+          <button class="map-zoom-btn" onclick="mapZoom(1.3)" title="Alejar">&minus;</button>
+          <button class="map-zoom-btn map-marker-btn" id="btn-add-marker" onclick="toggleMarkerMode()" title="Añadir Lugar" draggable="true" ondragstart="onMarkerDragStart(event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-utilidades" class="section">
+      <div class="section-header"><span class="section-icon">&#9881;</span><h2>Utilidades</h2></div>
+      <div class="cards-grid" id="grid-utilidades"></div>
+      <div id="util-workspace" style="display:none"></div>
+    </section>
+
+  </main>
+  </div> <!-- /main-area -->
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Detalle</span>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- SPINNER -->
+<div class="spinner-overlay" id="spinner">
+  <div class="spinner"></div>
+  <div class="spinner-text">Guardando...</div>
+</div>
+
+<!-- HOVER PREVIEW -->
+<div id="card-preview" style="display:none"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  function showSetupRequired() {
+    document.getElementById('login-screen').innerHTML =
+      '<div class="frame-outer" style="max-width:500px;margin:auto;margin-top:15vh">' +
+        '<div class="nail ntl"></div><div class="nail ntr"></div>' +
+        '<div class="nail nbl"></div><div class="nail nbr"></div>' +
+        '<div class="parchment" style="text-align:center">' +
+          '<div class="login-logo">D&amp;D</div>' +
+          '<div class="login-subtitle">Campaign Manager</div>' +
+          '<div class="login-divider"></div>' +
+          '<p style="margin:1em 0;color:#d4c4a0">Esta campa\u00f1a a\u00fan no est\u00e1 configurada.</p>' +
+          '<p style="margin:1em 0;color:#d4c4a0;font-size:0.9em">' +
+            'Ejecuta en tu terminal:<br>' +
+            '<code style="background:rgba(255,255,255,0.1);padding:4px 12px;border-radius:4px;font-size:1.1em;color:#f0e6d0;display:inline-block;margin-top:8px">' +
+              'node setup/wizard.mjs' +
+            '</code>' +
+          '</p>' +
+        '</div>' +
+      '</div>';
+  }
+</script>
+<script src="campaign.js" onerror="showSetupRequired()"></script>
+<script src="config.js"></script>
+<script>
+  // Inyectar nombre de campaña en UI estática
+  document.title = CONFIG.NAME + ' — Campaña D&D';
+  document.getElementById('login-logo').textContent = CONFIG.NAME;
+  document.getElementById('sidebar-logo').textContent = CONFIG.NAME;
+  document.getElementById('sidebar-subtitle').textContent = CONFIG.SUBTITLE;
+  // Ocultar tabs opcionales
+  if (!CONFIG.HAS_MAP) document.querySelectorAll('.map-only').forEach(el => el.style.display = 'none');
+  if (!CONFIG.HAS_AI) document.querySelectorAll('.ai-only').forEach(el => el.style.display = 'none');
+</script>
+<script src="supabase-client.js"></script>
+<script src="auth.js"></script>
+<script src="data/tiendas.js"></script>
+<script src="planear.js"></script>
+<script src="preparador.js"></script>
+<script src="dndbeyond.js"></script>
+<script src="hex-grid.js"></script>
+<script src="hex-explore.js"></script>
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+</body>
+</html>
