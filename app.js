@@ -28,11 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = await login(user, pw);
     if (role === 'must_change') {
       return; // showChangePasswordScreen ya se encargó
+    } else if (role === 'no_access') {
+      errEl.textContent = 'No tienes acceso a esta campaña.';
+      document.getElementById('username-input').select();
     } else if (role) {
       errEl.textContent = '';
       bootApp();
     } else {
-      errEl.textContent = 'Usuario o contrase\u00f1a incorrectos.';
+      errEl.textContent = 'Usuario o contraseña incorrectos.';
       document.getElementById('username-input').select();
     }
   });
@@ -3370,6 +3373,7 @@ async function manageUsersAPI(body) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${session.access_token}`,
       'apikey': CONFIG.SUPABASE_ANON_KEY,
+      'x-campaign-slug': CONFIG.SLUG,
     },
     body: JSON.stringify(body),
   });

@@ -7,7 +7,7 @@ function corsHeaders(origin: string): Record<string, string> {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     "Access-Control-Allow-Origin": allowed,
-    "Access-Control-Allow-Headers": "authorization, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-campaign-slug",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
   };
 }
@@ -31,7 +31,6 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: "Method not allowed" }, 405, headers);
   }
 
-  // Verify caller is authenticated DM
   const authHeader = req.headers.get("authorization") || "";
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -42,7 +41,7 @@ Deno.serve(async (req) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  // Verify the caller's JWT to ensure they are DM
+  // Verify the caller's JWT
   const callerClient = createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: authHeader } },
   });
@@ -51,33 +50,50 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: "No autenticado" }, 401, headers);
   }
 
-  // Fetch full user data via admin to get reliable user_metadata
-  const { data: { user: caller } } = await adminClient.auth.admin.getUserById(callerJwt.id);
-  if (!caller || caller.user_metadata?.role !== "dm") {
-    return jsonResponse({ error: "Solo el DM puede administrar usuarios" }, 403, headers);
-  }
-
-  const callerCampaign = caller.user_metadata?.campaign;
-
   const body = await req.json();
   const { action } = body;
 
+  // Campaign slug comes from the request header (set by frontend)
+  const campaignSlug = req.headers.get("x-campaign-slug") || body.campaign || "";
+  if (!campaignSlug) {
+    return jsonResponse({ error: "Falta el slug de la campaña" }, 400, headers);
+  }
+
+  // Verify caller is DM of this campaign via campaign_members
+  const { data: callerMembership } = await adminClient
+    .from("campaign_members")
+    .select("role")
+    .eq("user_id", callerJwt.id)
+    .eq("campaign", campaignSlug)
+    .single();
+
+  if (!callerMembership || callerMembership.role !== "dm") {
+    return jsonResponse({ error: "Solo el DM puede administrar usuarios" }, 403, headers);
+  }
+
   // ── LIST: Get all users for this campaign ─────────────────
   if (action === "list") {
-    const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 100 });
+    const { data: members, error } = await adminClient
+      .from("campaign_members")
+      .select("user_id, username, role, created_at")
+      .eq("campaign", campaignSlug);
+
     if (error) return jsonResponse({ error: error.message }, 500, headers);
 
-    const campaignUsers = users
-      .filter((u) => u.user_metadata?.campaign === callerCampaign)
-      .map((u) => ({
-        id: u.id,
-        username: u.user_metadata?.username || u.email?.split("@")[0],
-        role: u.user_metadata?.role || "player",
-        mustChangePassword: u.user_metadata?.mustChangePassword || false,
-        created_at: u.created_at,
-      }));
+    // Get mustChangePassword from auth.users metadata
+    const users = [];
+    for (const m of (members || [])) {
+      const { data: { user } } = await adminClient.auth.admin.getUserById(m.user_id);
+      users.push({
+        id: m.user_id,
+        username: m.username,
+        role: m.role,
+        mustChangePassword: user?.user_metadata?.mustChangePassword || false,
+        created_at: m.created_at,
+      });
+    }
 
-    return jsonResponse({ users: campaignUsers }, 200, headers);
+    return jsonResponse({ users }, 200, headers);
   }
 
   // ── CREATE: Add a new user ────────────────────────────────
@@ -87,25 +103,60 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "username, role y password son requeridos" }, 400, headers);
     }
 
-    const { data, error } = await adminClient.auth.admin.createUser({
-      email: `${username.toLowerCase()}@dnd.local`,
-      password,
-      email_confirm: true,
-      user_metadata: {
-        role,
-        campaign: callerCampaign,
-        username: username.toLowerCase(),
-        mustChangePassword: true,
-      },
-    });
+    const email = `${username.toLowerCase()}@dnd.local`;
 
-    if (error) return jsonResponse({ error: error.message }, 400, headers);
+    // Check if user already exists in auth
+    const { data: { users: existing } } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
+    const existingUser = existing?.find((u) => u.email === email);
+
+    let userId: string;
+
+    if (existingUser) {
+      // User exists — check if already member of this campaign
+      const { data: existingMember } = await adminClient
+        .from("campaign_members")
+        .select("user_id")
+        .eq("user_id", existingUser.id)
+        .eq("campaign", campaignSlug)
+        .single();
+
+      if (existingMember) {
+        return jsonResponse({ error: `${username} ya es miembro de esta campaña` }, 400, headers);
+      }
+      userId = existingUser.id;
+    } else {
+      // Create new auth user
+      const { data, error } = await adminClient.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: {
+          username: username.toLowerCase(),
+          mustChangePassword: true,
+        },
+      });
+      if (error) return jsonResponse({ error: error.message }, 400, headers);
+      userId = data.user.id;
+    }
+
+    // Add membership
+    const { error: memberError } = await adminClient
+      .from("campaign_members")
+      .insert({
+        user_id: userId,
+        campaign: campaignSlug,
+        role,
+        username: username.toLowerCase(),
+      });
+
+    if (memberError) return jsonResponse({ error: memberError.message }, 400, headers);
+
     return jsonResponse({
       user: {
-        id: data.user.id,
+        id: userId,
         username: username.toLowerCase(),
         role,
-        mustChangePassword: true,
+        mustChangePassword: !existingUser,
       },
     }, 201, headers);
   }
@@ -115,41 +166,66 @@ Deno.serve(async (req) => {
     const { userId, role, resetPassword, newPassword } = body;
     if (!userId) return jsonResponse({ error: "userId requerido" }, 400, headers);
 
-    // Verify target user belongs to same campaign
-    const { data: { user: target } } = await adminClient.auth.admin.getUserById(userId);
-    if (!target || target.user_metadata?.campaign !== callerCampaign) {
+    // Verify target user is member of this campaign
+    const { data: targetMember } = await adminClient
+      .from("campaign_members")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("campaign", campaignSlug)
+      .single();
+
+    if (!targetMember) {
       return jsonResponse({ error: "Usuario no encontrado en esta campaña" }, 404, headers);
     }
 
-    const updates: Record<string, unknown> = {};
-    if (role) updates.user_metadata = { ...target.user_metadata, role };
-    if (resetPassword) {
-      updates.password = newPassword || "halo2026";
-      updates.user_metadata = { ...(updates.user_metadata || target.user_metadata), mustChangePassword: true };
+    if (role) {
+      await adminClient
+        .from("campaign_members")
+        .update({ role })
+        .eq("user_id", userId)
+        .eq("campaign", campaignSlug);
     }
 
-    const { error } = await adminClient.auth.admin.updateUserById(userId, updates);
-    if (error) return jsonResponse({ error: error.message }, 400, headers);
+    if (resetPassword) {
+      const { error } = await adminClient.auth.admin.updateUserById(userId, {
+        password: newPassword || "cambiar2026",
+        user_metadata: { mustChangePassword: true },
+      });
+      if (error) return jsonResponse({ error: error.message }, 400, headers);
+    }
+
     return jsonResponse({ ok: true }, 200, headers);
   }
 
-  // ── DELETE: Remove a user ─────────────────────────────────
+  // ── DELETE: Remove a user from this campaign ──────────────
   if (action === "delete") {
     const { userId } = body;
     if (!userId) return jsonResponse({ error: "userId requerido" }, 400, headers);
 
-    // Verify target user belongs to same campaign
-    const { data: { user: target } } = await adminClient.auth.admin.getUserById(userId);
-    if (!target || target.user_metadata?.campaign !== callerCampaign) {
+    // Verify target user is member of this campaign
+    const { data: targetMember } = await adminClient
+      .from("campaign_members")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("campaign", campaignSlug)
+      .single();
+
+    if (!targetMember) {
       return jsonResponse({ error: "Usuario no encontrado en esta campaña" }, 404, headers);
     }
 
     // Don't allow DM to delete themselves
-    if (userId === caller.id) {
+    if (userId === callerJwt.id) {
       return jsonResponse({ error: "No puedes eliminarte a ti mismo" }, 400, headers);
     }
 
-    const { error } = await adminClient.auth.admin.deleteUser(userId);
+    // Remove membership (don't delete auth user — may be in other campaigns)
+    const { error } = await adminClient
+      .from("campaign_members")
+      .delete()
+      .eq("user_id", userId)
+      .eq("campaign", campaignSlug);
+
     if (error) return jsonResponse({ error: error.message }, 400, headers);
     return jsonResponse({ ok: true }, 200, headers);
   }
