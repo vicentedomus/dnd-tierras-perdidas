@@ -950,10 +950,10 @@ body.bg-app {
 /* ============================================================
    DM ONLY
    ============================================================ */
-.dm-only { display: none; }
-.is-dm .dm-only { display: initial; }
-.is-dm .dm-only.flex { display: flex; }
-.is-dm .dm-only.grid { display: grid; }
+.dm-only { display: none !important; }
+.is-dm .dm-only { display: initial !important; }
+.is-dm .dm-only.flex { display: flex !important; }
+.is-dm .dm-only.grid { display: grid !important; }
 
 /* ============================================================
    NOTA CARD
