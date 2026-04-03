@@ -1,7 +1,7 @@
 {
-  "name": "Campaña D&D",
-  "short_name": "D&D",
-  "description": "Compendio interactivo de campaña de Dungeons & Dragons",
+  "name": "Las Tierras Perdidas — Campaña D&D",
+  "short_name": "Tierras Perdidas",
+  "description": "Compendio interactivo de la campaña Las Tierras Perdidas",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#131313",
